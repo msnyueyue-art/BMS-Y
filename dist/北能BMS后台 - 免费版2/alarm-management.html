@@ -814,6 +814,215 @@
         .modal-btn:hover {
             background: #E5E7EB;
         }
+
+        /* logo 设置弹框 */
+        .logo-setting-modal {
+            width: 400px;
+        }
+
+        .logo-upload-container {
+            text-align: center;
+        }
+
+        .logo-upload-hint {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 16px;
+        }
+
+        .logo-upload-area {
+            width: 200px;
+            height: 80px;
+            margin: 0 auto 16px;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-gray);
+        }
+
+        .logo-upload-area:hover {
+            border-color: var(--primary-blue);
+            background: var(--light-blue);
+        }
+
+        .logo-upload-area.has-image {
+            border-style: solid;
+        }
+
+        .logo-upload-area.error {
+            border-color: var(--error-red);
+            background: #FEF0F0;
+        }
+
+        .logo-upload-placeholder {
+            color: var(--text-light);
+            font-size: 14px;
+            text-align: center;
+            padding: 0 16px;
+        }
+
+        .logo-preview-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        .logo-preview-image.show {
+            display: block;
+        }
+
+        .logo-select-btn {
+            padding: 8px 24px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 8px;
+        }
+
+        .logo-select-btn:hover {
+            background: var(--bg-gray);
+            border-color: var(--primary-blue);
+        }
+
+        .logo-upload-note {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+
+        .logo-upload-status {
+            margin-top: 12px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .logo-upload-status.success {
+            color: var(--success-green);
+            display: block;
+        }
+
+        .logo-upload-status.error {
+            color: var(--error-red);
+            display: block;
+        }
+
+        .logo-upload-status svg {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+            margin-right: 4px;
+            fill: currentColor;
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-white);
+            border-radius: 8px;
+            width: 600px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-gray);
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--text-dark);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border-color);
+            background: var(--bg-white);
+        }
+
+        .modal-btn.primary {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .modal-btn.primary:hover {
+            background: #0052E6;
+            border-color: #0052E6;
+        }
+
+        .modal-btn.default:hover {
+            background: var(--bg-gray);
+        }
     </style>
 </head>
 <body>
@@ -851,11 +1060,11 @@
                     <path d="M7 10l5 5 5-5z"/>
                 </svg>
                 <div class="user-dropdown">
-                    <div class="dropdown-item">
+                    <div class="dropdown-item" onclick="openLogoSettingModal()">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
                         </svg>
-                        Logo设置
+                        logo 设置
                     </div>
                     <div class="dropdown-item" onclick="logout()">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -1163,6 +1372,47 @@
             </div>
             <div class="modal-footer">
                 <button class="modal-btn" onclick="closeAlarmDetail()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- logo 设置弹框 -->
+    <div class="modal-overlay" id="logoSettingModal">
+        <div class="modal logo-setting-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">logo 设置</h3>
+                <button class="modal-close" onclick="closeLogoSettingModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="logo-upload-container">
+                    <div class="logo-upload-hint">上传 logo 图片</div>
+
+                    <div class="logo-upload-area" id="logoUploadArea" onclick="selectLogoImage()">
+                        <div class="logo-upload-placeholder" id="logoPlaceholder">
+                            点击或拖拽图片至此处
+                        </div>
+                        <img id="logoPreviewImage" class="logo-preview-image" alt="logo预览" />
+                    </div>
+
+                    <button type="button" class="logo-select-btn" onclick="selectLogoImage()">选择图片</button>
+
+                    <div class="logo-upload-note">
+                        支持格式:PNG/JPG,建议尺寸不超过 500×200px
+                    </div>
+
+                    <div class="logo-upload-status" id="logoUploadStatus">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        <span id="logoStatusText"></span>
+                    </div>
+
+                    <input type="file" id="logoFileInput" accept="image/png,image/jpeg,image/jpg" style="display: none;" onchange="handleLogoFileSelect(event)" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn default" onclick="closeLogoSettingModal()">取消</button>
+                <button class="modal-btn primary" id="logoConfirmBtn" onclick="confirmLogoChange()" disabled>确认</button>
             </div>
         </div>
     </div>
@@ -1543,6 +1793,225 @@
                 window.location.href = 'index.html';
             }
         }
+
+        // ===== logo 设置相关功能 =====
+        let selectedLogoFile = null;
+        let selectedLogoDataURL = null;
+
+        // 打开 logo 设置弹框
+        function openLogoSettingModal() {
+            const modal = document.getElementById('logoSettingModal');
+            modal.classList.add('active');
+
+            // 加载已保存的 logo
+            const savedLogo = localStorage.getItem('customLogo');
+            if (savedLogo) {
+                showLogoPreview(savedLogo);
+                enableConfirmButton();
+            } else {
+                resetLogoUpload();
+            }
+        }
+
+        // 关闭 logo 设置弹框
+        function closeLogoSettingModal() {
+            document.getElementById('logoSettingModal').classList.remove('active');
+            resetLogoUpload();
+        }
+
+        // 重置上传状态
+        function resetLogoUpload() {
+            selectedLogoFile = null;
+            selectedLogoDataURL = null;
+
+            const uploadArea = document.getElementById('logoUploadArea');
+            const placeholder = document.getElementById('logoPlaceholder');
+            const previewImage = document.getElementById('logoPreviewImage');
+            const status = document.getElementById('logoUploadStatus');
+            const confirmBtn = document.getElementById('logoConfirmBtn');
+
+            uploadArea.classList.remove('has-image', 'error');
+            placeholder.style.display = 'block';
+            previewImage.classList.remove('show');
+            status.className = 'logo-upload-status';
+            confirmBtn.disabled = true;
+        }
+
+        // 选择 logo 图片
+        function selectLogoImage() {
+            document.getElementById('logoFileInput').click();
+        }
+
+        // 处理文件选择
+        function handleLogoFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // 验证文件类型
+            if (!['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)) {
+                showLogoError('请上传 PNG/JPG 格式的图片');
+                return;
+            }
+
+            // 验证文件大小(最大2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showLogoError('图片大小不能超过 2MB');
+                return;
+            }
+
+            // 读取图片并验证尺寸
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // 验证尺寸
+                    if (img.width > 500 || img.height > 200) {
+                        showLogoError('图片尺寸不能超过 500×200px');
+                        return;
+                    }
+
+                    // 验证通过,保存文件
+                    selectedLogoFile = file;
+                    selectedLogoDataURL = e.target.result;
+                    showLogoPreview(e.target.result);
+                    showLogoSuccess('✓ 上传成功');
+                    enableConfirmButton();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 显示 logo 预览
+        function showLogoPreview(dataURL) {
+            const uploadArea = document.getElementById('logoUploadArea');
+            const placeholder = document.getElementById('logoPlaceholder');
+            const previewImage = document.getElementById('logoPreviewImage');
+
+            uploadArea.classList.add('has-image');
+            uploadArea.classList.remove('error');
+            placeholder.style.display = 'none';
+            previewImage.src = dataURL;
+            previewImage.classList.add('show');
+        }
+
+        // 显示错误信息
+        function showLogoError(message) {
+            const uploadArea = document.getElementById('logoUploadArea');
+            const status = document.getElementById('logoUploadStatus');
+            const statusText = document.getElementById('logoStatusText');
+
+            uploadArea.classList.add('error');
+            status.className = 'logo-upload-status error';
+            statusText.textContent = message;
+
+            // 清除状态
+            resetLogoUpload();
+        }
+
+        // 显示成功信息
+        function showLogoSuccess(message) {
+            const status = document.getElementById('logoUploadStatus');
+            const statusText = document.getElementById('logoStatusText');
+
+            status.className = 'logo-upload-status success';
+            statusText.textContent = message;
+        }
+
+        // 启用确认按钮
+        function enableConfirmButton() {
+            document.getElementById('logoConfirmBtn').disabled = false;
+        }
+
+        // 确认 logo 更换
+        function confirmLogoChange() {
+            if (!selectedLogoDataURL) {
+                alert('请先选择图片');
+                return;
+            }
+
+            // 保存到 localStorage
+            localStorage.setItem('customLogo', selectedLogoDataURL);
+
+            // 更新系统左上角 logo
+            updateSystemLogo(selectedLogoDataURL);
+
+            // 关闭弹框
+            closeLogoSettingModal();
+
+            alert('logo 设置成功!');
+        }
+
+        // 更新系统 logo
+        function updateSystemLogo(logoDataURL) {
+            // 更新当前页面的 logo
+            const brandLogoImg = document.querySelector('.brand-logo img');
+            if (brandLogoImg) {
+                brandLogoImg.src = logoDataURL;
+            }
+
+            // 更新登录页的 logo (通过修改 localStorage,登录页会读取)
+            // 登录页需要添加相应的读取逻辑
+        }
+
+        // 拖拽上传功能
+        const logoUploadArea = document.getElementById('logoUploadArea');
+        if (logoUploadArea) {
+            // 阻止默认拖拽行为
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                logoUploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            // 拖拽时高亮
+            ['dragenter', 'dragover'].forEach(eventName => {
+                logoUploadArea.addEventListener(eventName, () => {
+                    logoUploadArea.style.borderColor = 'var(--primary-blue)';
+                    logoUploadArea.style.background = 'var(--light-blue)';
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                logoUploadArea.addEventListener(eventName, () => {
+                    logoUploadArea.style.borderColor = '';
+                    logoUploadArea.style.background = '';
+                }, false);
+            });
+
+            // 处理拖拽文件
+            logoUploadArea.addEventListener('drop', function(e) {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const fileInput = document.getElementById('logoFileInput');
+                    fileInput.files = files;
+                    handleLogoFileSelect({ target: fileInput });
+                }
+            }, false);
+        }
+
+        // ===== 页面加载时读取Logo =====
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTable();
+
+            // 加载自定义Logo
+            const savedLogo = localStorage.getItem('customLogo');
+            if (savedLogo) {
+                updateSystemLogo(savedLogo);
+            }
+        });
+
+        // 点击遮罩层关闭弹框
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
     </script>
 </body>
 </html>
