@@ -327,6 +327,8 @@
 
         .page-header {
             margin-bottom: 24px;
+            display: flex;
+            align-items: center;
         }
 
         .page-title {
@@ -334,6 +336,18 @@
             font-weight: 600;
             color: var(--text-dark);
             margin-bottom: 8px;
+        }
+
+        .page-total-count {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-left: 16px;
+        }
+
+        .page-total-count .count-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-blue);
         }
 
         .page-breadcrumb {
@@ -2575,6 +2589,18 @@
 
     <!-- 左侧菜单栏 -->
     <aside class="sidebar">
+        <!-- 首页 -->
+        <div class="menu-group">
+            <div class="menu-parent" onclick="window.location.href='dashboard.html'">
+                <div class="menu-parent-left">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                    <span>首页</span>
+                </div>
+            </div>
+        </div>
+
         <!-- 用户管理菜单组 -->
         <div class="menu-group">
             <div class="menu-parent" onclick="toggleMenu(this)">
@@ -2673,6 +2699,9 @@
         <!-- 页面头部 -->
         <div class="page-header">
             <h1 class="page-title">设备管理</h1>
+            <div class="page-total-count">
+                设备总数: <span class="count-number" id="deviceTotalCount">0</span>
+            </div>
         </div>
 
         <!-- 内容卡片 -->
@@ -4863,6 +4892,10 @@
             // 更新统计信息
             document.getElementById('totalCount').textContent = currentDevices.length;
             document.getElementById('totalItems').textContent = currentDevices.length;
+            const deviceTotalCount = document.getElementById('deviceTotalCount');
+            if (deviceTotalCount) {
+                deviceTotalCount.textContent = currentDevices.length;
+            }
         }
 
         // ===== 筛选功能 =====
@@ -5669,13 +5702,19 @@
             const isExpanded = element.classList.contains('expanded');
             const children = element.nextElementSibling;
 
-            if (isExpanded) {
-                element.classList.remove('expanded');
-                children.classList.remove('show');
-            } else {
-                element.classList.add('expanded');
-                children.classList.add('show');
+            if (!isExpanded) {
+                // 关闭所有其他已展开的菜单
+                document.querySelectorAll('.menu-parent.expanded').forEach(parent => {
+                    if (parent !== element) {
+                        parent.classList.remove('expanded');
+                        parent.nextElementSibling.classList.remove('show');
+                    }
+                });
             }
+
+            // 切换当前菜单
+            element.classList.toggle('expanded');
+            children.classList.toggle('show');
         }
 
         function toggleUserMenu() {

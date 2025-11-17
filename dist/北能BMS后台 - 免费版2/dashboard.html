@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页 - 北能BMS后台管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #1E6BFF;
+            --hover-blue: #4589FF;
+            --light-blue: #E8F3FF;
+            --success-green: #52C41A;
+            --warning-orange: #FA8C16;
+            --error-red: #F5222D;
+            --text-dark: #333333;
+            --text-gray: #666666;
+            --text-light: #999999;
+            --border-color: #E5E7EB;
+            --bg-white: #FFFFFF;
+            --bg-gray: #F8F9FA;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+                         'Microsoft YaHei', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: var(--bg-gray);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* 顶部导航栏 */
+        .top-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: var(--bg-white);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .navbar-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-logo {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-blue);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .icon-btn:hover {
+            background: var(--bg-gray);
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-gray);
+        }
+
+        .icon-btn.has-badge::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--error-red);
+            border-radius: 50%;
+            border: 2px solid var(--bg-white);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .user-menu:hover {
+            background: var(--bg-gray);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--hover-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-name {
+            font-size: 14px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .dropdown-icon {
+            width: 16px;
+            height: 16px;
+            fill: var(--text-gray);
+            transition: transform 0.2s;
+        }
+
+        .user-menu.active .dropdown-icon {
+            transform: rotate(180deg);
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: var(--shadow-md);
+            min-width: 180px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+        }
+
+        .user-menu.active .user-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 14px;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .dropdown-item:last-child {
+            border-bottom: none;
+            color: var(--error-red);
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-gray);
+        }
+
+        .dropdown-item svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* 左侧边栏 */
+        .sidebar {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            bottom: 0;
+            width: 240px;
+            background: var(--bg-white);
+            border-right: 1px solid var(--border-color);
+            padding: 16px 0;
+            overflow-y: auto;
+            z-index: 999;
+        }
+
+        .menu-group {
+            margin-bottom: 8px;
+        }
+
+        .menu-parent {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-dark);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .menu-parent:hover {
+            background: var(--bg-gray);
+        }
+
+        .menu-parent.active {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .menu-parent-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-parent-left svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        .menu-arrow {
+            width: 16px;
+            height: 16px;
+            fill: var(--text-gray);
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .menu-parent.expanded .menu-arrow {
+            transform: rotate(90deg);
+        }
+
+        .menu-children {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .menu-children.show {
+            max-height: 200px;
+        }
+
+        .menu-child {
+            padding: 10px 20px 10px 52px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-gray);
+            font-size: 14px;
+        }
+
+        .menu-child:hover {
+            background: var(--bg-gray);
+            color: var(--text-dark);
+        }
+
+        .menu-child.active {
+            background: var(--light-blue);
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .menu-child svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .menu-child.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+            color: var(--text-light);
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 240px;
+            margin-top: 60px;
+            padding: 24px;
+            min-height: calc(100vh - 60px);
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* 数据概览卡片 */
+        .overview-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .overview-card {
+            background: var(--bg-white);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .overview-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .overview-card-content {
+            flex: 1;
+        }
+
+        .overview-card-label {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+        }
+
+        .overview-card-value {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .overview-card-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overview-card-icon svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .overview-card-icon.blue {
+            background: var(--light-blue);
+        }
+
+        .overview-card-icon.blue svg {
+            fill: var(--primary-blue);
+        }
+
+        .overview-card-icon.green {
+            background: #F6FFED;
+        }
+
+        .overview-card-icon.green svg {
+            fill: var(--success-green);
+        }
+
+        .overview-card-icon.orange {
+            background: #FFF7E6;
+        }
+
+        .overview-card-icon.orange svg {
+            fill: var(--warning-orange);
+        }
+
+        /* 内容卡片 */
+        .content-card {
+            background: var(--bg-white);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .card-action {
+            font-size: 14px;
+            color: var(--primary-blue);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .card-action:hover {
+            color: var(--hover-blue);
+        }
+
+        /* 告警列表 */
+        .alarm-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .alarm-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .alarm-item:hover {
+            background: var(--bg-gray);
+            border-color: var(--primary-blue);
+        }
+
+        .alarm-item-left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alarm-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .alarm-icon.critical {
+            background: #FFF1F0;
+        }
+
+        .alarm-icon.critical svg {
+            fill: var(--error-red);
+            width: 20px;
+            height: 20px;
+        }
+
+        .alarm-icon.important {
+            background: #FFF7E6;
+        }
+
+        .alarm-icon.important svg {
+            fill: var(--warning-orange);
+            width: 20px;
+            height: 20px;
+        }
+
+        .alarm-icon.normal {
+            background: #E6F7FF;
+        }
+
+        .alarm-icon.normal svg {
+            fill: #1890FF;
+            width: 20px;
+            height: 20px;
+        }
+
+        .alarm-item-content {
+            flex: 1;
+        }
+
+        .alarm-item-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .alarm-item-desc {
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .alarm-item-time {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-right: 16px;
+        }
+
+        .solve-btn {
+            padding: 6px 16px;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .solve-btn:hover {
+            background: var(--hover-blue);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-gray);
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            fill: var(--text-light);
+            margin-bottom: 12px;
+        }
+
+        /* 图表区域 */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .chart-container {
+            background: var(--bg-white);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-container-full {
+            background: var(--bg-white);
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .chart-header-vertical {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .chart-header-stats {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+        }
+
+        .header-stat-label {
+            color: var(--text-gray);
+        }
+
+        .header-stat-value {
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .header-stat-change {
+            font-weight: 600;
+            color: var(--success-green);
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chart-tab {
+            padding: 4px 12px;
+            border: 1px solid var(--border-color);
+            background: transparent;
+            border-radius: 4px;
+            font-size: 13px;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chart-tab:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .chart-tab.active {
+            background: var(--primary-blue);
+            border-color: var(--primary-blue);
+            color: white;
+        }
+
+        /* 环形图容器 */
+        .donut-chart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .donut-chart-wrapper {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 20px;
+        }
+
+        .donut-chart {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .donut-chart path {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .donut-chart path:hover {
+            opacity: 0.8;
+        }
+
+        .chart-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+            white-space: nowrap;
+        }
+
+        .donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .donut-center-value {
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-dark);
+            line-height: 1;
+        }
+
+        .donut-center-label {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-top: 4px;
+        }
+
+        .donut-legend {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-text {
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .legend-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-left: 4px;
+        }
+
+        /* 排行榜 */
+        .ranking-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 12px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+
+        .ranking-item:hover {
+            background: var(--bg-gray);
+        }
+
+        .ranking-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .ranking-item:nth-child(1) .ranking-number {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            color: white;
+        }
+
+        .ranking-item:nth-child(2) .ranking-number {
+            background: linear-gradient(135deg, #C0C0C0 0%, #A9A9A9 100%);
+            color: white;
+        }
+
+        .ranking-item:nth-child(3) .ranking-number {
+            background: linear-gradient(135deg, #CD7F32 0%, #B8860B 100%);
+            color: white;
+        }
+
+        .ranking-item:nth-child(n+4) .ranking-number {
+            background: var(--bg-gray);
+            color: var(--text-gray);
+        }
+
+        .ranking-name {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        .ranking-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+
+        .ranking-unit {
+            font-size: 13px;
+            color: var(--text-gray);
+            margin-left: 4px;
+        }
+
+        /* 柱状图容器 */
+        .bar-chart-container {
+            padding: 20px;
+            position: relative;
+        }
+
+        .bar-chart-legend {
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .bar-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .bar-legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
+        .bar-chart-wrapper {
+            position: relative;
+            height: 220px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 0 20px 0 50px;
+            border-bottom: 2px solid #E5E7EB;
+            border-left: 2px solid #E5E7EB;
+        }
+
+        .bar-y-axis {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 0 8px 20px 0;
+        }
+
+        .y-axis-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-align: right;
+            line-height: 1;
+        }
+
+        .bar-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            max-width: 60px;
+        }
+
+        .bar-pair {
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            width: 100%;
+            height: 200px;
+        }
+
+        .bar {
+            flex: 1;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: all 0.3s;
+            min-height: 20px;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-dark);
+            white-space: nowrap;
+        }
+
+        .bar-label {
+            font-size: 12px;
+            color: var(--text-gray);
+            text-align: center;
+        }
+
+        .bar-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.85);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+            white-space: pre-line;
+            line-height: 1.6;
+        }
+
+        .bar:hover {
+            opacity: 0.8;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .overview-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* logo 设置弹框 */
+        .logo-setting-modal {
+            width: 400px;
+        }
+
+        .logo-upload-container {
+            text-align: center;
+        }
+
+        .logo-upload-hint {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-bottom: 16px;
+        }
+
+        .logo-upload-area {
+            width: 200px;
+            height: 80px;
+            margin: 0 auto 16px;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            background: var(--bg-gray);
+        }
+
+        .logo-upload-area:hover {
+            border-color: var(--primary-blue);
+            background: var(--light-blue);
+        }
+
+        .logo-upload-area.has-image {
+            border-style: solid;
+        }
+
+        .logo-upload-area.error {
+            border-color: var(--error-red);
+            background: #FEF0F0;
+        }
+
+        .logo-upload-placeholder {
+            color: var(--text-light);
+            font-size: 14px;
+            text-align: center;
+            padding: 0 16px;
+        }
+
+        .logo-preview-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        .logo-preview-image.show {
+            display: block;
+        }
+
+        .logo-select-btn {
+            padding: 8px 24px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 8px;
+        }
+
+        .logo-select-btn:hover {
+            background: var(--bg-gray);
+            border-color: var(--primary-blue);
+        }
+
+        .logo-upload-note {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 8px;
+        }
+
+        .logo-upload-status {
+            margin-top: 12px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .logo-upload-status.success {
+            color: var(--success-green);
+            display: block;
+        }
+
+        .logo-upload-status.error {
+            color: var(--error-red);
+            display: block;
+        }
+
+        .logo-upload-status svg {
+            width: 16px;
+            height: 16px;
+            vertical-align: middle;
+            margin-right: 4px;
+            fill: currentColor;
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-white);
+            border-radius: 8px;
+            width: 600px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-gray);
+            cursor: pointer;
+            padding: 0;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--text-dark);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            padding: 10px 24px;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border-color);
+            background: var(--bg-white);
+        }
+
+        .modal-btn.primary {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        .modal-btn.primary:hover {
+            background: #0052E6;
+            border-color: #0052E6;
+        }
+
+        .modal-btn.default:hover {
+            background: var(--bg-gray);
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="top-navbar">
+        <div class="navbar-left">
+            <div class="brand-logo">
+                <img src="logo.png" alt="AlwaysControl Technology" style="height: 40px; object-fit: contain;">
+            </div>
+        </div>
+        <div class="navbar-right">
+            <!-- 夜间模式 -->
+            <button class="icon-btn" title="夜间模式">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zM12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm0-10c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/>
+                </svg>
+            </button>
+            <!-- 语言切换 -->
+            <button class="icon-btn" title="语言切换">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z"/>
+                </svg>
+            </button>
+            <!-- 铃铛按钮 -->
+            <button class="icon-btn has-badge" title="告警通知" onclick="window.location.href='alarm-management.html'">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                </svg>
+            </button>
+            <!-- 用户菜单 -->
+            <div class="user-menu" onclick="toggleUserMenu()">
+                <div class="user-avatar">管</div>
+                <span class="user-name">管理员</span>
+                <svg class="dropdown-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M7 10l5 5 5-5z"/>
+                </svg>
+                <div class="user-dropdown">
+                    <div class="dropdown-item" onclick="openLogoSettingModal()">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                        </svg>
+                        logo 设置
+                    </div>
+                    <div class="dropdown-item" onclick="logout()">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
+                        </svg>
+                        退出登录
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 左侧边栏 -->
+    <aside class="sidebar">
+        <!-- 首页 -->
+        <div class="menu-group">
+            <div class="menu-parent active">
+                <div class="menu-parent-left">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                    <span>首页</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 用户管理菜单组 -->
+        <div class="menu-group">
+            <div class="menu-parent" onclick="toggleMenu(this)">
+                <div class="menu-parent-left">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                    <span>用户管理</span>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </div>
+            <div class="menu-children">
+                <div class="menu-child" onclick="window.location.href='user-management.html'">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                    <span>用户管理</span>
+                </div>
+                <div class="menu-child disabled">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 6h-2.18c.11-.31.18-.65.18-1 0-1.66-1.34-3-3-3-1.05 0-1.96.54-2.5 1.35l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 12 7.4l3.38 4.6L17 10.83 14.92 8H20v6z"/>
+                    </svg>
+                    <span>分销商管理</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设备管理菜单组 -->
+        <div class="menu-group">
+            <div class="menu-parent" onclick="toggleMenu(this)">
+                <div class="menu-parent-left">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/>
+                    </svg>
+                    <span>设备管理</span>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </div>
+            <div class="menu-children">
+                <div class="menu-child" onclick="window.location.href='device-management.html'">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
+                    </svg>
+                    <span>设备管理</span>
+                </div>
+                <div class="menu-child" onclick="window.location.href='alarm-management.html'">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                    </svg>
+                    <span>告警管理</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 系统管理菜单组 -->
+        <div class="menu-group">
+            <div class="menu-parent" onclick="toggleMenu(this)">
+                <div class="menu-parent-left">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+                    </svg>
+                    <span>系统管理</span>
+                </div>
+                <svg class="menu-arrow" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </div>
+            <div class="menu-children">
+                <div class="menu-child disabled">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                    </svg>
+                    <span>角色管理</span>
+                </div>
+                <div class="menu-child" onclick="window.location.href='personnel-management.html'">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
+                    </svg>
+                    <span>人员管理</span>
+                </div>
+                <div class="menu-child disabled">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                    </svg>
+                    <span>操作日志</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <div class="page-header">
+            <h1 class="page-title">数据概览</h1>
+        </div>
+
+        <!-- 数据概览 -->
+        <div class="overview-cards">
+            <div class="overview-card" onclick="window.location.href='user-management.html'" title="点击跳转到用户管理">
+                <div class="overview-card-content">
+                    <div class="overview-card-label">用户总数</div>
+                    <div class="overview-card-value" id="totalUsers">1,234</div>
+                </div>
+                <div class="overview-card-icon blue">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="overview-card" onclick="window.location.href='device-management.html'" title="点击跳转到设备管理">
+                <div class="overview-card-content">
+                    <div class="overview-card-label">设备总数</div>
+                    <div class="overview-card-value" id="totalDevices">456</div>
+                </div>
+                <div class="overview-card-icon green">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM8 20H4v-4h4v4zm0-6H4v-4h4v4zm0-6H4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4zm6 12h-4v-4h4v4zm0-6h-4v-4h4v4zm0-6h-4V4h4v4z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- logo 设置弹框 -->
+    <div class="modal-overlay" id="logoSettingModal">
+        <div class="modal logo-setting-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">logo 设置</h3>
+                <button class="modal-close" onclick="closeLogoSettingModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="logo-upload-container">
+                    <div class="logo-upload-hint">上传 logo 图片</div>
+
+                    <div class="logo-upload-area" id="logoUploadArea" onclick="selectLogoImage()">
+                        <div class="logo-upload-placeholder" id="logoPlaceholder">
+                            点击或拖拽图片至此处
+                        </div>
+                        <img id="logoPreviewImage" class="logo-preview-image" alt="logo预览" />
+                    </div>
+
+                    <button type="button" class="logo-select-btn" onclick="selectLogoImage()">选择图片</button>
+
+                    <div class="logo-upload-note">
+                        支持格式:PNG/JPG,建议尺寸不超过 500×200px
+                    </div>
+
+                    <div class="logo-upload-status" id="logoUploadStatus">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+                        </svg>
+                        <span id="logoStatusText"></span>
+                    </div>
+
+                    <input type="file" id="logoFileInput" accept="image/png,image/jpeg,image/jpg" style="display: none;" onchange="handleLogoFileSelect(event)" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn default" onclick="closeLogoSettingModal()">取消</button>
+                <button class="modal-btn primary" id="logoConfirmBtn" onclick="confirmLogoChange()" disabled>确认</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== 模拟数据 =====
+        const dashboardData = {
+            overview: {
+                totalUsers: 1234,
+                totalDevices: 456
+            }
+        };
+
+        // ===== 渲染数据概览 =====
+        function renderOverview() {
+            document.getElementById('totalUsers').textContent = dashboardData.overview.totalUsers.toLocaleString();
+            document.getElementById('totalDevices').textContent = dashboardData.overview.totalDevices.toLocaleString();
+        }
+
+
+        // ===== 菜单交互 =====
+        function toggleMenu(element) {
+            const isExpanded = element.classList.contains('expanded');
+            const children = element.nextElementSibling;
+
+            if (!isExpanded) {
+                // 关闭所有其他已展开的菜单
+                document.querySelectorAll('.menu-parent.expanded').forEach(parent => {
+                    if (parent !== element) {
+                        parent.classList.remove('expanded');
+                        parent.nextElementSibling.classList.remove('show');
+                    }
+                });
+            }
+
+            // 切换当前菜单
+            element.classList.toggle('expanded');
+            children.classList.toggle('show');
+        }
+
+        // ===== 用户菜单切换 =====
+        function toggleUserMenu() {
+            const userMenu = document.querySelector('.user-menu');
+            userMenu.classList.toggle('active');
+        }
+
+        // ===== 退出登录 =====
+        function logout() {
+            if (confirm('确定要退出登录吗?')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // ===== logo 设置相关功能 =====
+        let selectedLogoFile = null;
+        let selectedLogoDataURL = null;
+
+        // 打开 logo 设置弹框
+        function openLogoSettingModal() {
+            const modal = document.getElementById('logoSettingModal');
+            modal.classList.add('active');
+
+            // 加载已保存的 logo
+            const savedLogo = localStorage.getItem('customLogo');
+            if (savedLogo) {
+                showLogoPreview(savedLogo);
+                enableConfirmButton();
+            } else {
+                resetLogoUpload();
+            }
+        }
+
+        // 关闭 logo 设置弹框
+        function closeLogoSettingModal() {
+            document.getElementById('logoSettingModal').classList.remove('active');
+            resetLogoUpload();
+        }
+
+        // 重置上传状态
+        function resetLogoUpload() {
+            selectedLogoFile = null;
+            selectedLogoDataURL = null;
+
+            const uploadArea = document.getElementById('logoUploadArea');
+            const placeholder = document.getElementById('logoPlaceholder');
+            const previewImage = document.getElementById('logoPreviewImage');
+            const status = document.getElementById('logoUploadStatus');
+            const confirmBtn = document.getElementById('logoConfirmBtn');
+
+            uploadArea.classList.remove('has-image', 'error');
+            placeholder.style.display = 'block';
+            previewImage.classList.remove('show');
+            status.className = 'logo-upload-status';
+            confirmBtn.disabled = true;
+        }
+
+        // 选择 logo 图片
+        function selectLogoImage() {
+            document.getElementById('logoFileInput').click();
+        }
+
+        // 处理文件选择
+        function handleLogoFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // 验证文件类型
+            if (!['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)) {
+                showLogoError('请上传 PNG/JPG 格式的图片');
+                return;
+            }
+
+            // 验证文件大小(最大2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showLogoError('图片大小不能超过 2MB');
+                return;
+            }
+
+            // 读取图片并验证尺寸
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    // 验证尺寸
+                    if (img.width > 500 || img.height > 200) {
+                        showLogoError('图片尺寸不能超过 500×200px');
+                        return;
+                    }
+
+                    // 验证通过,保存文件
+                    selectedLogoFile = file;
+                    selectedLogoDataURL = e.target.result;
+                    showLogoPreview(e.target.result);
+                    showLogoSuccess('✓ 上传成功');
+                    enableConfirmButton();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 显示 logo 预览
+        function showLogoPreview(dataURL) {
+            const uploadArea = document.getElementById('logoUploadArea');
+            const placeholder = document.getElementById('logoPlaceholder');
+            const previewImage = document.getElementById('logoPreviewImage');
+
+            uploadArea.classList.add('has-image');
+            uploadArea.classList.remove('error');
+            placeholder.style.display = 'none';
+            previewImage.src = dataURL;
+            previewImage.classList.add('show');
+        }
+
+        // 显示错误信息
+        function showLogoError(message) {
+            const uploadArea = document.getElementById('logoUploadArea');
+            const status = document.getElementById('logoUploadStatus');
+            const statusText = document.getElementById('logoStatusText');
+
+            uploadArea.classList.add('error');
+            status.className = 'logo-upload-status error';
+            statusText.textContent = message;
+
+            // 清除状态
+            resetLogoUpload();
+        }
+
+        // 显示成功信息
+        function showLogoSuccess(message) {
+            const status = document.getElementById('logoUploadStatus');
+            const statusText = document.getElementById('logoStatusText');
+
+            status.className = 'logo-upload-status success';
+            statusText.textContent = message;
+        }
+
+        // 启用确认按钮
+        function enableConfirmButton() {
+            document.getElementById('logoConfirmBtn').disabled = false;
+        }
+
+        // 确认 logo 更换
+        function confirmLogoChange() {
+            if (!selectedLogoDataURL) {
+                alert('请先选择图片');
+                return;
+            }
+
+            // 保存到 localStorage
+            localStorage.setItem('customLogo', selectedLogoDataURL);
+
+            // 更新系统左上角 logo
+            updateSystemLogo(selectedLogoDataURL);
+
+            // 关闭弹框
+            closeLogoSettingModal();
+
+            alert('logo 设置成功!');
+        }
+
+        // 更新系统 logo
+        function updateSystemLogo(logoDataURL) {
+            // 更新当前页面的 logo
+            const brandLogoImg = document.querySelector('.brand-logo img');
+            if (brandLogoImg) {
+                brandLogoImg.src = logoDataURL;
+            }
+
+            // 更新登录页的 logo (通过修改 localStorage,登录页会读取)
+            // 登录页需要添加相应的读取逻辑
+        }
+
+        // 拖拽上传功能
+        const logoUploadArea = document.getElementById('logoUploadArea');
+        if (logoUploadArea) {
+            // 阻止默认拖拽行为
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                logoUploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            // 拖拽时高亮
+            ['dragenter', 'dragover'].forEach(eventName => {
+                logoUploadArea.addEventListener(eventName, () => {
+                    logoUploadArea.style.borderColor = 'var(--primary-blue)';
+                    logoUploadArea.style.background = 'var(--light-blue)';
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                logoUploadArea.addEventListener(eventName, () => {
+                    logoUploadArea.style.borderColor = '';
+                    logoUploadArea.style.background = '';
+                }, false);
+            });
+
+            // 处理拖拽文件
+            logoUploadArea.addEventListener('drop', function(e) {
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    const fileInput = document.getElementById('logoFileInput');
+                    fileInput.files = files;
+                    handleLogoFileSelect({ target: fileInput });
+                }
+            }, false);
+        }
+
+        // ===== 初始化 =====
+        document.addEventListener('DOMContentLoaded', function() {
+            renderOverview();
+
+            // 加载自定义Logo
+            const savedLogo = localStorage.getItem('customLogo');
+            if (savedLogo) {
+                updateSystemLogo(savedLogo);
+            }
+        });
+
+        // 点击其他地方关闭用户菜单
+        document.addEventListener('click', function(e) {
+            const userMenu = document.querySelector('.user-menu');
+            if (userMenu && !userMenu.contains(e.target)) {
+                userMenu.classList.remove('active');
+            }
+        });
+
+        // 点击遮罩层关闭弹框
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

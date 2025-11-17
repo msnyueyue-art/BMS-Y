@@ -326,12 +326,26 @@
 
         .page-header {
             margin-bottom: 24px;
+            display: flex;
+            align-items: center;
         }
 
         .page-title {
             font-size: 20px;
             font-weight: 600;
             color: var(--text-primary);
+        }
+
+        .page-total-count {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-left: 16px;
+        }
+
+        .page-total-count .count-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-blue);
         }
 
         .breadcrumb {
@@ -1067,6 +1081,18 @@
 
     <!-- 左侧边栏 -->
     <aside class="sidebar">
+        <!-- 首页 -->
+        <div class="menu-group">
+            <div class="menu-parent" onclick="window.location.href='dashboard.html'">
+                <div class="menu-parent-left">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                    <span>首页</span>
+                </div>
+            </div>
+        </div>
+
         <!-- 用户管理菜单组 -->
         <div class="menu-group">
             <div class="menu-parent expanded" onclick="toggleMenu(this)">
@@ -1164,6 +1190,9 @@
     <main class="main-content">
         <div class="page-header">
             <h1 class="page-title">分销商管理</h1>
+            <div class="page-total-count">
+                分销商总数: <span class="count-number" id="distributorTotalCount">0</span>
+            </div>
         </div>
 
         <div class="content-card">
@@ -1576,8 +1605,12 @@
         function renderDistributorList() {
             const tbody = document.getElementById('distributorTableBody');
             const totalCount = document.getElementById('totalCount');
+            const distributorTotalCount = document.getElementById('distributorTotalCount');
 
             totalCount.textContent = mockDistributors.length;
+            if (distributorTotalCount) {
+                distributorTotalCount.textContent = mockDistributors.length;
+            }
 
             tbody.innerHTML = mockDistributors.map(dist => `
                 <tr>
@@ -1654,13 +1687,19 @@
             const isExpanded = element.classList.contains('expanded');
             const children = element.nextElementSibling;
 
-            if (isExpanded) {
-                element.classList.remove('expanded');
-                children.classList.remove('show');
-            } else {
-                element.classList.add('expanded');
-                children.classList.add('show');
+            if (!isExpanded) {
+                // 关闭所有其他已展开的菜单
+                document.querySelectorAll('.menu-parent.expanded').forEach(parent => {
+                    if (parent !== element) {
+                        parent.classList.remove('expanded');
+                        parent.nextElementSibling.classList.remove('show');
+                    }
+                });
             }
+
+            // 切换当前菜单
+            element.classList.toggle('expanded');
+            children.classList.toggle('show');
         }
 
         // 筛选功能

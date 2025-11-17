@@ -337,12 +337,26 @@
 
         .page-header {
             margin-bottom: 24px;
+            display: flex;
+            align-items: center;
         }
 
         .page-title {
             font-size: 20px;
             font-weight: 600;
             color: var(--text-primary);
+        }
+
+        .page-total-count {
+            font-size: 14px;
+            color: var(--text-gray);
+            margin-left: 16px;
+        }
+
+        .page-total-count .count-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-blue);
         }
 
         .breadcrumb {
@@ -1177,6 +1191,18 @@
 
     <!-- 左侧边栏 -->
     <aside class="sidebar">
+        <!-- 首页 -->
+        <div class="menu-group">
+            <div class="menu-parent" onclick="window.location.href='dashboard.html'">
+                <div class="menu-parent-left">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                    <span>首页</span>
+                </div>
+            </div>
+        </div>
+
         <!-- 用户管理菜单组 -->
         <div class="menu-group">
             <div class="menu-parent expanded active" onclick="toggleMenu(this)">
@@ -1274,6 +1300,9 @@
     <main class="main-content">
         <div class="page-header">
             <h1 class="page-title">用户管理</h1>
+            <div class="page-total-count">
+                用户总数: <span class="count-number" id="userTotalCount">0</span>
+            </div>
         </div>
 
         <div class="content-card">
@@ -1613,8 +1642,12 @@
         function renderUserList() {
             const tbody = document.getElementById('userTableBody');
             const totalCount = document.getElementById('totalCount');
+            const userTotalCount = document.getElementById('userTotalCount');
 
             totalCount.textContent = mockUsers.length;
+            if (userTotalCount) {
+                userTotalCount.textContent = mockUsers.length;
+            }
 
             tbody.innerHTML = mockUsers.map(user => `
                 <tr>

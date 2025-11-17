@@ -839,11 +839,11 @@
                     <path d="M7 10l5 5 5-5z"/>
                 </svg>
                 <div class="user-dropdown">
-                    <div class="dropdown-item">
+                    <div class="dropdown-item" onclick="openLogoSettingModal()">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/>
+                            <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM5 17l3.5-4.5 2.5 3.01L14.5 11l4.5 6H5z"/>
                         </svg>
-                        账号设置
+                        logo 设置
                     </div>
                     <div class="dropdown-item" onclick="logout()">
                         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -858,6 +858,18 @@
 
     <!-- 左侧菜单栏 -->
     <aside class="sidebar">
+        <!-- 首页 -->
+        <div class="menu-group">
+            <div class="menu-parent" onclick="window.location.href='dashboard.html'">
+                <div class="menu-parent-left">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                    </svg>
+                    <span>首页</span>
+                </div>
+            </div>
+        </div>
+
         <!-- 用户管理菜单组 -->
         <div class="menu-group">
             <div class="menu-parent" onclick="toggleMenu(this)">
@@ -1455,13 +1467,19 @@
             const isExpanded = element.classList.contains('expanded');
             const children = element.nextElementSibling;
 
-            if (isExpanded) {
-                element.classList.remove('expanded');
-                children.classList.remove('show');
-            } else {
-                element.classList.add('expanded');
-                children.classList.add('show');
+            if (!isExpanded) {
+                // 关闭所有其他已展开的菜单
+                document.querySelectorAll('.menu-parent.expanded').forEach(parent => {
+                    if (parent !== element) {
+                        parent.classList.remove('expanded');
+                        parent.nextElementSibling.classList.remove('show');
+                    }
+                });
             }
+
+            // 切换当前菜单
+            element.classList.toggle('expanded');
+            children.classList.toggle('show');
         }
 
         // ===== 初始化 =====
