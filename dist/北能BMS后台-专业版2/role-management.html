@@ -877,6 +877,75 @@
             color: var(--danger-color);
             font-weight: 500;
         }
+
+        /* Logo设置弹框样式 */
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--bg-gray);
+            margin-bottom: 16px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-blue);
+            background: #E8F4FF;
+        }
+
+        .upload-area.has-image {
+            padding: 20px;
+            background: var(--bg-white);
+            border-style: solid;
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            fill: var(--text-regular);
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: var(--text-regular);
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 6px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .upload-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            background: var(--bg-white);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 12px;
+        }
+
+        .upload-button:hover {
+            border-color: var(--primary-blue);
+            color: var(--primary-blue);
+        }
     </style>
 </head>
 <body>
@@ -1189,6 +1258,40 @@
             <div class="modal-footer">
                 <button class="modal-btn default" onclick="closeDeleteModal()">取消</button>
                 <button class="modal-btn danger" onclick="confirmDelete()">确定删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logo设置弹框 -->
+    <div class="modal-overlay" id="logoSettingModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">logo 设置</h3>
+                <button class="modal-close" onclick="closeLogoSettingModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label class="form-label">上传 logo 图片</label>
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('logoFileInput').click()">
+                    <div id="uploadPlaceholder">
+                        <svg class="upload-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM5 17l3.5-4.5 2.5 3.01L14.5 11l4.5 6H5z"/>
+                        </svg>
+                        <div class="upload-text">点击或拖拽图片至此处</div>
+                        <div class="upload-hint">支持格式:PNG/JPG 建议尺寸不小于 500×200px</div>
+                    </div>
+                    <img id="logoPreview" class="preview-image" style="display: none;">
+                </div>
+                <input type="file" id="logoFileInput" accept="image/png,image/jpeg,image/jpg" style="display: none;" onchange="handleLogoFileSelect(event)">
+                <button class="upload-button" onclick="document.getElementById('logoFileInput').click()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+                    </svg>
+                    选择图片
+                </button>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn default" onclick="closeLogoSettingModal()">取消</button>
+                <button class="modal-btn primary" onclick="saveLogoSetting()">确认</button>
             </div>
         </div>
     </div>
@@ -1703,6 +1806,74 @@
             }
         });
 
+        // ===== Logo设置相关函数 =====
+        let selectedLogoFile = null;
+
+        function openLogoSettingModal() {
+            event.stopPropagation();
+            document.getElementById('logoSettingModal').classList.add('active');
+            const savedLogo = localStorage.getItem('customLogo');
+            if (savedLogo) {
+                const preview = document.getElementById('logoPreview');
+                const placeholder = document.getElementById('uploadPlaceholder');
+                preview.src = savedLogo;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+                document.getElementById('uploadArea').classList.add('has-image');
+            }
+        }
+
+        function closeLogoSettingModal() {
+            document.getElementById('logoSettingModal').classList.remove('active');
+            selectedLogoFile = null;
+            const preview = document.getElementById('logoPreview');
+            const placeholder = document.getElementById('uploadPlaceholder');
+            const fileInput = document.getElementById('logoFileInput');
+            preview.style.display = 'none';
+            placeholder.style.display = 'block';
+            fileInput.value = '';
+            document.getElementById('uploadArea').classList.remove('has-image');
+        }
+
+        function handleLogoFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            if (!file.type.match('image/(png|jpeg|jpg)')) {
+                alert('仅支持 PNG/JPG 格式的图片');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                alert('图片大小不能超过 5MB');
+                return;
+            }
+            selectedLogoFile = file;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('logoPreview');
+                const placeholder = document.getElementById('uploadPlaceholder');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                placeholder.style.display = 'none';
+                document.getElementById('uploadArea').classList.add('has-image');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function saveLogoSetting() {
+            const preview = document.getElementById('logoPreview');
+            if (!preview.src || preview.style.display === 'none') {
+                alert('请先选择一张图片');
+                return;
+            }
+            localStorage.setItem('customLogo', preview.src);
+            const logoImg = document.querySelector('.brand-logo img');
+            if (logoImg) {
+                logoImg.src = preview.src;
+            }
+            alert('Logo 设置成功!');
+            closeLogoSettingModal();
+        }
+
         // 页面加载时渲染列表
         document.addEventListener('DOMContentLoaded', function() {
             renderRoleList();
@@ -1716,6 +1887,15 @@
                     }
                 });
             });
+
+            // 加载自定义Logo
+            const savedLogo = localStorage.getItem('customLogo');
+            if (savedLogo) {
+                const logoImg = document.querySelector('.brand-logo img');
+                if (logoImg) {
+                    logoImg.src = savedLogo;
+                }
+            }
         });
     </script>
 </body>
